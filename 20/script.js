@@ -1,6 +1,7 @@
 class SpeechRecognition {
   constructor() {
     this.words = document.querySelector('.words');
+    this.languages = document.querySelector('.languages');
     this.init();
   }
 
@@ -10,15 +11,33 @@ class SpeechRecognition {
       window.mozSpeechRecognition ||
       window.msSpeechRecognition)();
 
-    recognition.lang = 'de-DE';
     recognition.interimResults = true;
 
     this.render();
     this.eventHandler(recognition);
+    this.getLanguage(recognition);
     recognition.start();
   }
 
+  getLanguage(recognition) {
+    let languages = navigator.languages;
+
+    languages = languages.filter(lang => lang.includes('-'));
+
+    const options = languages.map(
+      (element, index) =>
+        this.languages.options[this.languages.options.length] = new Option(
+          element,
+          element
+        )
+    );
+  }
+
   eventHandler(recognition) {
+    this.languages.addEventListener('change', e => {
+      recognition.lang = e.target.value;
+    });
+
     recognition.addEventListener('result', e => {
       const transcript = Array.from(e.results)
         .map(result => result[0])
@@ -54,30 +73,3 @@ class SpeechRecognition {
 (() => {
   new SpeechRecognition();
 })();
-
-/*
-
-const recognition = new (window.SpeechRecognition ||
-  window.webkitSpeechRecognition ||
-  window.mozSpeechRecognition ||
-  window.msSpeechRecognition)();
-recognition.interimResults = true;
-let p = document.createElement('p');
-const words = document.querySelector('.words');
-words.appendChild(p);
-recognition.addEventListener('result', e => {
-  console.log(e);
-  const transcript = Array.from(e.results)
-    .map(result => result[0])
-    .map(result => result.transcript)
-    .join('');
-  const poopScript = transcript.replace(/poop|poo|shit|dump/gi, '💩');
-  p.textContent = poopScript;
-  if (e.results[0].isFinal) {
-    p = document.createElement('p');
-    words.appendChild(p);
-  }
-});
-recognition.addEventListener('end', recognition.start);
-recognition.start();
-*/
