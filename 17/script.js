@@ -1,23 +1,37 @@
-const bands = [
-  'The Plot in You',
-  'The Devil Wears Prada',
-  'Pierce the Veil',
-  'Norma Jean',
-  'The Bled',
-  'Say Anything',
-  'The Midway State',
-  'We Came as Romans',
-  'Counterparts',
-  'Oh, Sleeper',
-  'A Skylit Drive',
-  'Anywhere But Here',
-  'An Old Dog'
-];
+import { getData } from './service';
 
-const strip = bandName => bandName.replace(/^\s(a|the|an)/i, '').trim();
+class SortingBandNames {
+  constructor(container) {
+    this.container = container;
+    this.render();
+  }
 
-const sortedBand = bands.sort((a, b) => (strip(a) > strip(b) ? 1 : -1));
+  getList() {
+    const url = './list.json';
+    return getData(url).then(bands => bands);
+  }
 
-document.querySelector('#bands').innerHTML = sortedBand
-  .map(band => `<li>${band}</li>`)
-  .join('');
+  strip(bandName) {
+    return bandName.replace(/^\s(a|the|an)/i, '').trim();
+  }
+
+  async sortList() {
+    const bands = await this.getList();
+
+    return bands.sort((a, b) => (this.strip(a) > this.strip(b) ? 1 : -1));
+  }
+
+  async render() {
+    const sortedBand = await this.sortList();
+
+    this.container.innerHTML = sortedBand
+      .map(band => `<li>${band}</li>`)
+      .join('');
+  }
+}
+
+(() => {
+  const container = document.querySelector('#bands');
+
+  new SortingBandNames(container);
+})();
