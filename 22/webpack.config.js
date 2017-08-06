@@ -1,5 +1,10 @@
-let webpack = require('webpack');
-let path = require('path');
+const webpack = require('webpack');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const extractSass = new ExtractTextPlugin({
+  filename: './styles.css'
+});
 
 let babelOptions = {
   presets: 'es2015'
@@ -7,7 +12,7 @@ let babelOptions = {
 
 const config = {
   devtool: 'inline-source-map',
-  entry: ['babel-polyfill', './script.js'],
+  entry: ['babel-polyfill', './script.js', './styles.scss'],
   output: {
     filename: './index.js'
   },
@@ -38,12 +43,32 @@ const config = {
             options: babelOptions
           }
         ]
+      },
+      {
+        test: /\.scss$/,
+        use: extractSass.extract({
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true
+              }
+            }
+          ]
+        })
       }
     ]
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
-  }
+  },
+  plugins: [extractSass]
 };
 
 module.exports = config;
