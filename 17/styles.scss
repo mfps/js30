@@ -16,15 +16,13 @@ body {
     margin: auto;
     padding: 0;
     box-shadow: 0 0 0 20px rgba(0, 0, 0, 0.05);
-}
-
-#bands li {
-    border-bottom: 1px solid #efefef;
-    padding: 20px;
-}
-
-#bands li:last-child {
-    border-bottom: 0;
+    li {
+        border-bottom: 1px solid #efefef;
+        padding: 20px;
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
 }
 
 a {

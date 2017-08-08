@@ -1,9 +1,13 @@
-const webpack = require('webpack');
+var webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
   filename: './styles.css'
+});
+
+const uglifyJS = new webpack.optimize.UglifyJsPlugin({
+  compress: { warnings: false }
 });
 
 let babelOptions = {
@@ -12,7 +16,11 @@ let babelOptions = {
 
 const config = {
   devtool: 'inline-source-map',
-  entry: ['babel-polyfill', './script.js', './styles.scss'],
+  entry: [
+    'babel-polyfill',
+    path.resolve(__dirname, './script.js'),
+    path.resolve(__dirname, './styles.scss')
+  ],
   output: {
     filename: './index.js'
   },
@@ -51,24 +59,30 @@ const config = {
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true
+                sourceMap: true,
+                minimize: true
               }
             },
             {
               loader: 'sass-loader',
               options: {
-                sourceMap: true
+                sourceMap: true,
+                minimize: true
               }
             }
           ]
         })
+      },
+      {
+        test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+        use: [{ loader: 'url-loader' }]
       }
     ]
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
   },
-  plugins: [extractSass]
+  plugins: [extractSass, uglifyJS]
 };
 
 module.exports = config;

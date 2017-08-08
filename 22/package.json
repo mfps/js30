@@ -6,7 +6,7 @@
   "author": "FSW",
   "license": "MIT",
   "scripts": {
-    "start": "browser-sync start --directory --server --files '*.css, *.html, *.js'",
+    "start": "browser-sync start --server --files '*.css, *.html, *.js'",
     "build": "webpack --config webpack.config.js --watch"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
+    "url-loader": "^0.5.9",
     "webpack": "^3.4.1"
   }
 }

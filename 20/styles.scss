@@ -20,19 +20,18 @@ body {
     background-size: 100% 3rem;
     position: relative;
     line-height: 3rem;
+    &:before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        top: 0;
+        left: 30px;
+        bottom: 0;
+        border: 1px solid;
+        border-color: transparent #efe4e4;
+    }
 }
 
 p {
     margin: 0 0 3rem;
-}
-
-.words:before {
-    content: '';
-    position: absolute;
-    width: 4px;
-    top: 0;
-    left: 30px;
-    bottom: 0;
-    border: 1px solid;
-    border-color: transparent #efe4e4;
 }
