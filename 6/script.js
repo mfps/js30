@@ -18,7 +18,7 @@ class TypeAhead {
 
   getData() {
     return fetch(ENTPOINTS.CITYS)
-      .then(blob => blob.json())
+      .then(response => response.json())
       .then(data => this.cities.push(...data));
   }
 
@@ -34,11 +34,12 @@ class TypeAhead {
   }
 
   displayMatches(e) {
-    const matchArray = this.findMatches(e.target.value, this.cities);
+    const value = e.target.value;
+    const matchArray = this.findMatches(value, this.cities);
     const html = matchArray
       .map(place => {
-        const cityName = this.markTarget(e.target.value, place, 'city');
-        const stateName = this.markTarget(e.target.value, place, 'state');
+        const cityName = this.highlightSearchValue(value, place, 'city');
+        const stateName = this.highlightSearchValue(value, place, 'state');
         return this.resultTemplate(cityName, stateName, place);
       })
       .join('');
@@ -54,7 +55,7 @@ class TypeAhead {
     `;
   }
 
-  markTarget(value, place, position) {
+  highlightSearchValue(value, place, position) {
     const regex = new RegExp(value, 'gi');
     return place[position].replace(regex, `<span class="hl">${value}</span>`);
   }
