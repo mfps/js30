@@ -64,7 +64,17 @@ input.search {
     }
 }
 
-span.population {
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.distance {
+    text-transform: none;
+}
+
+.population,
+.distance {
     font-size: 15px;
 }
 

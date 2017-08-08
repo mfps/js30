@@ -11,7 +11,7 @@ const uglifyJS = new webpack.optimize.UglifyJsPlugin({
 });
 
 let babelOptions = {
-  presets: 'es2015'
+  presets: 'es2016'
 };
 
 const config = {

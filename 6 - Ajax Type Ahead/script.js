@@ -1,3 +1,5 @@
+import { Distance } from './distance';
+
 const ENTPOINTS = {
   CITYS: 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json'
 };
@@ -8,12 +10,15 @@ class TypeAhead {
     this.suggestions = document.querySelector('.suggestions');
     this.cities = [];
 
+    this.myDistance = new Distance();
+
     this.init();
   }
 
-  init() {
-    this.getData();
+  async init() {
+    await this.getData();
     this.eventHandler();
+    this.getDistance();
   }
 
   getData() {
@@ -22,11 +27,25 @@ class TypeAhead {
       .then(data => this.cities.push(...data));
   }
 
-  findMatches(wordToMatch, cities) {
-    return cities.filter(place => {
-      const regex = new RegExp(wordToMatch, 'gi');
-      return place.city.match(regex) || place.state.match(regex);
+  getDistance() {
+    this.cities.map(city => {
+      return (city.distance = this.myDistance.distance(
+        city.longitude,
+        city.latitude
+      ));
     });
+  }
+
+  findMatches(wordToMatch, cities) {
+    return cities
+      .filter(place => {
+        const regex = new RegExp(wordToMatch, 'gi');
+        return place.city.match(regex) || place.state.match(regex);
+      })
+      .sort(
+        (a, b) =>
+          (a.distance > b.distance ? 1 : b.distance > a.distance ? -1 : 0)
+      );
   }
 
   numberWithCommas(x) {
@@ -49,7 +68,10 @@ class TypeAhead {
   resultTemplate(cityName, stateName, place) {
     return `
       <li>
-        <span class="name">${cityName}, ${stateName}</span>
+        <div class="wrapper">
+          <span class="name">${cityName}, ${stateName}</span>
+          <span class="distance">distance to my position: ${place.distance}km</span>
+        </div>
         <span class="population">${this.numberWithCommas(place.population)}</span>
       </li>
     `;
